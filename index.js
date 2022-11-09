@@ -1,7 +1,7 @@
 // Import stylesheets
 import './style.css';
 import { fieldData } from './data/field_data.js';
-import { recordData } from './record_data.js';
+import { recordData } from './data/record_data.js';
 import { arr_users } from './data/lookup_definitions.js';
 
 //////////////////
@@ -35,11 +35,11 @@ const htmlEscape = (str) => {
 
 /* iterate over the LJ records file and create a CSV data set to read for downloading */
 const makeCSVRecords = (rd) => {
-
+  DEBUG = true;
   //get the records from the JSON response and assign to an array
   const recordArr = rd.platform.record;
 
-  DEBUG?console.log('RECORD OBJECT \r\n', recordArr):false;
+  DEBUG ? console.log('RECORD OBJECT \r\n', recordArr) : false;
 
   //create an array to return for the csv
   const csvArray = [];
@@ -132,6 +132,7 @@ const makeFieldObject = () => {
 
 /* Make header arrobj */
 const makeHeaders = (h) => {
+  DEBUG = true;
   const k = _.keys(h);
   const headerKeys = [];
   _.map(k, (o) => {
@@ -140,8 +141,8 @@ const makeHeaders = (h) => {
     obj['title'] = o.toLowerCase();
     headerKeys.push(obj);
   });
-  
-  DEBUG?console.log(headerKeys):false;
+
+  DEBUG ? console.log(headerKeys) : false;
   return headerKeys;
 };
 
@@ -163,7 +164,7 @@ const swapUserId = (uid) => {
 };
 
 /* Write CVS  */
-const writeCSVFile = (head,body) => {
+const writeCSVFile = (head, body) => {
   const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
   const csvStringifier = createCsvStringifier({
     header: head,
@@ -172,7 +173,7 @@ const writeCSVFile = (head,body) => {
   let h = csvStringifier.getHeaderString();
   let b = csvStringifier.stringifyRecords(body);
 
-  return h+b
+  return h + b;
 };
 
 /*  Create link to download */
@@ -188,20 +189,19 @@ const downloadFile = (csvFile) => {
 
   link.href = window.URL.createObjectURL(blob);
 
-  const action_div = document.getElementById("action_div")
+  const action_div = document.getElementById('action_div');
   action_div.appendChild(link);
 
-  return true
+  return true;
 };
 
 //////////////////
 //Do this stuff
-function main(){
-
-  const csvArray = makeCSVRecords(recordData)
-  const headers = makeHeaders(recordData.platform.record[0])
-  const csvFile = writeCSVFile(headers,csvArray)
-  const fileLinked = downloadFile(csvFile)
+function main() {
+  const csvArray = makeCSVRecords(recordData);
+  const headers = makeHeaders(recordData.platform.record[0]);
+  //  const csvFile = writeCSVFile(headers,csvArray)
+  //  const fileLinked = downloadFile(csvFile)
 }
 
 ////////////////////////////////////////
@@ -273,7 +273,7 @@ const sendAction = document.getElementById('send_button');
 sendAction.addEventListener('click', function handleChange(event) {
   console.log(resType.options[resType.selectedIndex].value);
   console.log(crudAction.options[crudAction.selectedIndex].value);
-  main()
+  main();
 });
 
 const file_reader = document.getElementById('file_reader');
