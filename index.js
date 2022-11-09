@@ -2,12 +2,12 @@
 import './style.css';
 import { fieldData } from './data/field_data.js';
 import { recordData } from './data/record_data.js';
-import { arr_users } from './data/lookup_definitions.js';
+import { arr_users, arr_objects } from './data/lookup_definitions.js';
 
 //////////////////
 // CONSTANTS
 //////////////////
-const DEBUG = false;
+let DEBUG = false;
 
 ////////////////
 // FUNCTIONS
@@ -35,11 +35,10 @@ const htmlEscape = (str) => {
 
 /* iterate over the LJ records file and create a CSV data set to read for downloading */
 const makeCSVRecords = (rd) => {
-  DEBUG = true;
   //get the records from the JSON response and assign to an array
   const recordArr = rd.platform.record;
 
-  DEBUG ? console.log('RECORD OBJECT \r\n', recordArr) : false;
+ DEBUG? console.log('RECORD OBJECT \r\n', recordArr):false
 
   //create an array to return for the csv
   const csvArray = [];
@@ -52,8 +51,10 @@ const makeCSVRecords = (rd) => {
       // if this is a user related field, than replace the user id and update the new array
       if (_.isObject(record[key])) {
         const user = record[key]?.uri;
+        const multiLookup = record[key]?.type;
+
         if (user) {
-          const i = user.indexOf('user');
+          const i = user.indexOf('user'); //determine if this is a USER link
           if (i > 0) {
             const newUserId = swapUserId(parseUserId(user));
             obj[key] = newUserId;
@@ -65,12 +66,19 @@ const makeCSVRecords = (rd) => {
               : false;
             return;
           }
+          if (multiLookup) {
+            const newMLObject = swapMLObject(record[key].type);
+            obj[key] = `${newMLObject}:${record[key]?.content}`;
+            DEBUG?console.log(`${key}:${newMLObject}\n previous ld:${record[key]?.type}`):false
+            return;
+          }
         }
 
         // if this is just content and no need to process any further just grab the content and update the new array
         const relatedObj = record[key]?.content;
         if (relatedObj) {
           obj[key] = relatedObj ? relatedObj : '';
+          
           DEBUG ? console.log(`${key}: ${relatedObj}`) : false;
           return;
         } else {
@@ -81,6 +89,7 @@ const makeCSVRecords = (rd) => {
       //return nonobject key:value
       obj[key] = value ? value : '';
       DEBUG ? console.log(key, ':', value) : false;
+      
     });
     //push this into the new array to convert to a csv
     csvArray.push(obj);
@@ -132,7 +141,6 @@ const makeFieldObject = () => {
 
 /* Make header arrobj */
 const makeHeaders = (h) => {
-  DEBUG = true;
   const k = _.keys(h);
   const headerKeys = [];
   _.map(k, (o) => {
@@ -156,11 +164,18 @@ const parseUserId = (objName) => {
 };
 
 /* Lookup old user id and return matching user id from new system */
-const swapUserId = (uid) => {
-  const ids = arr_users.filter((c) => c.lj_id == uid).map((c) => c.aap_id);
+const swapUserId = (id) => {
+  const ids = arr_users.filter((c) => c.lj_id == id).map((c) => c.aap_id);
 
   if (ids[0]) return ids[0];
   return '06c836a659904b9c8b0419682f7d4728';
+};
+
+const swapMLObject = (id) => {
+  const ids = arr_objects.filter((c) => c.lj_id == id).map((c) => c.aap_id);
+
+  if (ids[0]) return ids[0];
+  return '';
 };
 
 /* Write CVS  */
@@ -197,11 +212,13 @@ const downloadFile = (csvFile) => {
 
 //////////////////
 //Do this stuff
+/////////////////
 function main() {
   const csvArray = makeCSVRecords(recordData);
   const headers = makeHeaders(recordData.platform.record[0]);
-  //  const csvFile = writeCSVFile(headers,csvArray)
-  //  const fileLinked = downloadFile(csvFile)
+  const csvFile = writeCSVFile(headers,csvArray)
+  console.log(csvFile)
+  const fileLinked = downloadFile(csvFile)
 }
 
 ////////////////////////////////////////
