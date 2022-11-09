@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AAP Updating Tool</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://doghousedev.com/AAP/Testing/styles.css"
+    />
+    <link href="https://fonts.cdnfonts.com/css/roboto" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      defer
+      src="https://doghousedev.com/AAP/Testing/rest-functions/field-types.js"
+    ></script>
+    <script
+      defer
+      src="https://doghousedev.com/AAP/Testing/rest-functions/rest-object-definitions.js"
+    ></script>
+    <script
+      defer
+      src="https://doghousedev.com/AAP/Testing/rest-functions/functions.js"
+    ></script>
+    <script
+      defer
+      src="https://doghousedev.com/AAP/Testing/rest-functions/app.js"
+    ></script>
+  </head>
+
+  <body>
+    <div>
+      <h2 class="heading">agileapps Updater Tool</h2>
+      <hr class="hr3" />
+    </div>
+    <div>
+      <h2>Actions</h2>
+      <label for="resource_type">Choose resource:</label>
+
+      <select name="resource_type" id="resource_type">
+        <option value="field">Fields</option>
+        <option value="object">Objects</option>
+        <option value="page">Pages</option>
+        <option value="record">Records</option>
+        <option value="applicationTab">Tabs</option>
+        <option value="import">Import</option>
+      </select>
+
+      <label for="crud_action">Choose action:</label>
+
+      <select name="crud_action" id="crud_action">
+        <option value="get">Show</option>
+        <option value="post">Add</option>
+        <option value="put">Update</option>
+        <option value="delete">Delete</option>
+        <option value="transform">Transform</option>
+      </select>
+      <br />
+      <label for="dropdown_payload_type"> Payload: </label>
+      <select name="dropdown_payload_type" id="dropdown_payload_type">
+        <option value="****">-Choose One --</option>
+        <option value="longjump">Longjump</option>
+        <option value="agileappscloud">Agile Apps</option>
+      </select>
+
+      <label for="makeText"> Set import fields as text: </label>
+      <input type="checkbox" id="makeText" />
+      <br />
+      <label for="send_to_console">Console Log: </label>
+      <input type="checkbox" id="send_to_console" />
+      <p></p>
+
+      <div id="record_options_div" style="display: none">
+        <label for="fieldList"> Field List: </label>
+        <input type="text" id="fieldList" value="id" />
+
+        <label for="filterBy"> Filter By: </label>
+        <input type="text" id="filterBy" />
+        <small><i>(single quotes)</i></small>
+
+        <label for="sortBy"> Sort by: </label>
+        <input type="text" id="sortBy" value="id" />
+        <p></p>
+      </div>
+
+      <hr class="hr3" />
+    </div>
+
+    <div>
+      <h2>Object</h2>
+      <label for="dropdown_objectname"> Table Name: </label>
+      <select name="dropdown_objectname" id="dropdown_objectname">
+        <option value="****">None</option>
+      </select>
+      <br />
+
+      <hr class="hr3" />
+      <h2>Data</h2>
+      <p>
+        <input type="file" accept=".json,.csv,.txt" id="file_reader"" /><br />
+        <p></p>
+      </p>
+
+      <p class="content"></p>
+      <!-- <input type="file" id="jsonFile" accept=".json">
+        <p> -->
+      JSON (paste here):
+      <p>
+        <label for="json"> </label>
+        <textarea id="json" name="json" rows="8" cols="120"></textarea>
+      </p>
+    </div>
+
+    <div id = 'action_div'>
+      <p>
+        <button id="send_button" class="btn-send">Send</button>
+        <button id="clear_button">clear</button>
+      </p>
+    </div>
+
+
+    
+
+
+
+
+    <p></p>
+    <hr class="hr3" />
+    <div>
+      <h2>Console</h2>
+      <button id="clear_messages">clear console</button>
+      <button id="copy_console"><i class="fa fa-clipboard"></i></button>
+      <div id="loading"></div>
+      <div id="app" class="DivToScroll DivWithScroll"></div>
+      <button id="clear_messages_bottom">clear console</button>
+    </div>
+    <hr class="hr3" />
+  </body>
+</html>
